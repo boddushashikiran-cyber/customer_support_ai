@@ -1,0 +1,22 @@
+TechMart Electronics — Frequently Asked Questions
+
+Q: What are your customer support hours?
+A: Our support team is available Monday to Saturday, 9 AM to 9 PM IST. Email support is monitored 24/7 with a response time of under 24 hours.
+
+Q: How do I contact TechMart support?
+A: You can reach us at support@techmart-electronics.example, via live chat on our website, or by calling +91-1800-123-4567 (toll-free).
+
+Q: Do you offer international shipping?
+A: Yes, we ship to over 40 countries. See our Shipping Policy document for delivery timelines and customs information.
+
+Q: How do I create an account?
+A: Click "Sign Up" on the top right of our website, enter your email and a password, and verify your email address via the link we send you.
+
+Q: Can I change my registered email address?
+A: Yes, go to Account Settings > Profile > Email, enter the new email, and confirm via the verification link sent to the new address.
+
+Q: What payment methods do you accept?
+A: We accept all major credit/debit cards, UPI, net banking, and PayPal for international orders.
+
+Q: Do you have a loyalty or rewards program?
+A: Yes, TechMart Rewards gives you 1 point per ₹100 spent. Points can be redeemed for discounts on future purchases.

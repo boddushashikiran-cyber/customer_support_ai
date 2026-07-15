@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechMart Support Assistant</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --bubble-user: #6366f1;
+    --bubble-bot: #334155;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ---------- Auth screen ---------- */
+  #auth-screen {
+    background: var(--panel);
+    padding: 40px;
+    border-radius: 16px;
+    width: 340px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  #auth-screen h1 { font-size: 20px; margin-bottom: 4px; }
+  #auth-screen p.sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  #auth-screen input {
+    width: 100%; padding: 12px; margin-bottom: 12px;
+    border-radius: 8px; border: 1px solid #334155;
+    background: #0f172a; color: var(--text); font-size: 14px;
+  }
+  #auth-screen button {
+    width: 100%; padding: 12px; border-radius: 8px; border: none;
+    background: var(--accent); color: white; font-weight: 600;
+    cursor: pointer; font-size: 14px; margin-top: 4px;
+  }
+  #auth-screen button:hover { background: var(--accent-light); }
+  #auth-toggle { text-align: center; margin-top: 16px; font-size: 13px; color: var(--muted); cursor: pointer; }
+  #auth-error { color: #f87171; font-size: 13px; margin-bottom: 8px; min-height: 16px; }
+
+  /* ---------- Chat screen ---------- */
+  #chat-screen {
+    display: none;
+    width: 420px;
+    height: 640px;
+    background: var(--panel);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    flex-direction: column;
+  }
+  #chat-header {
+    padding: 16px 20px;
+    background: #172033;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #334155;
+  }
+  #chat-header .title { font-weight: 600; font-size: 15px; }
+  #chat-header .sub { font-size: 12px; color: var(--muted); }
+  #logout-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 12px; }
+
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.4; white-space: pre-wrap; }
+  .msg.user { align-self: flex-end; background: var(--bubble-user); color: white; border-bottom-right-radius: 4px; }
+  .msg.bot { align-self: flex-start; background: var(--bubble-bot); color: var(--text); border-bottom-left-radius: 4px; }
+  .msg .meta { display: block; font-size: 10px; color: #cbd5e1; margin-top: 6px; opacity: 0.7; }
+
+  #typing { align-self: flex-start; padding: 10px 14px; font-size: 13px; color: var(--muted); display: none; }
+
+  #input-row {
+    display: flex;
+    padding: 12px;
+    gap: 8px;
+    border-top: 1px solid #334155;
+    background: #172033;
+  }
+  #msg-input {
+    flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #334155;
+    background: #0f172a; color: var(--text); font-size: 14px; resize: none;
+  }
+  #send-btn {
+    padding: 0 18px; border-radius: 10px; border: none;
+    background: var(--accent); color: white; font-weight: 600; cursor: pointer;
+  }
+  #send-btn:hover { background: var(--accent-light); }
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <h1 id="auth-title">Welcome back</h1>
+  <p class="sub">Log in to chat with TechMart Support</p>
+  <div id="auth-error"></div>
+  <input id="username" type="text" placeholder="Username" />
+  <input id="password" type="password" placeholder="Password" />
+  <button id="auth-submit">Log In</button>
+  <div id="auth-toggle">Don't have an account? <b>Register</b></div>
+</div>
+
+<!-- CHAT SCREEN -->
+<div id="chat-screen">
+  <div id="chat-header">
+    <div>
+      <div class="title">TechMart Support Assistant</div>
+      <div class="sub">Billing · Technical · Product · Complaints · FAQ</div>
+    </div>
+    <button id="logout-btn">Log out</button>
+  </div>
+  <div id="messages"></div>
+  <div id="typing">Assistant is typing...</div>
+  <div id="input-row">
+    <textarea id="msg-input" rows="1" placeholder="Ask about billing, an error, a product, or anything else..."></textarea>
+    <button id="send-btn">Send</button>
+  </div>
+</div>
+
+<script>
+  // Point this at your backend URL. Defaults to local dev server.
+  const API_BASE = "http://localhost:8000";
+
+  let token = null;
+  let sessionId = null;
+  let isRegisterMode = false;
+
+  const authScreen = document.getElementById("auth-screen");
+  const chatScreen = document.getElementById("chat-screen");
+  const authTitle = document.getElementById("auth-title");
+  const authSubmit = document.getElementById("auth-submit");
+  const authToggle = document.getElementById("auth-toggle");
+  const authError = document.getElementById("auth-error");
+  const messagesEl = document.getElementById("messages");
+  const typingEl = document.getElementById("typing");
+  const inputEl = document.getElementById("msg-input");
+
+  authToggle.addEventListener("click", () => {
+    isRegisterMode = !isRegisterMode;
+    authTitle.textContent = isRegisterMode ? "Create an account" : "Welcome back";
+    authSubmit.textContent = isRegisterMode ? "Register" : "Log In";
+    authToggle.innerHTML = isRegisterMode
+      ? "Already have an account? <b>Log in</b>"
+      : "Don't have an account? <b>Register</b>";
+    authError.textContent = "";
+  });
+
+  authSubmit.addEventListener("click", async () => {
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    if (!username || !password) {
+      authError.textContent = "Please enter a username and password.";
+      return;
+    }
+    const endpoint = isRegisterMode ? "/auth/register" : "/auth/login";
+    try {
+      const res = await fetch(API_BASE + endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Authentication failed");
+      token = data.access_token;
+      authScreen.style.display = "none";
+      chatScreen.style.display = "flex";
+      addMessage("bot", "Hi! I'm your TechMart support assistant. Ask me about billing, technical issues, products, or anything else.");
+    } catch (err) {
+      authError.textContent = err.message;
+    }
+  });
+
+  document.getElementById("logout-btn").addEventListener("click", () => {
+    token = null;
+    sessionId = null;
+    messagesEl.innerHTML = "";
+    chatScreen.style.display = "none";
+    authScreen.style.display = "block";
+  });
+
+  function addMessage(role, text, meta) {
+    const div = document.createElement("div");
+    div.className = "msg " + (role === "user" ? "user" : "bot");
+    div.textContent = text;
+    if (meta) {
+      const metaEl = document.createElement("span");
+      metaEl.className = "meta";
+      metaEl.textContent = meta;
+      div.appendChild(metaEl);
+    }
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  async function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+    addMessage("user", text);
+    inputEl.value = "";
+    typingEl.style.display = "block";
+
+    try {
+      const res = await fetch(API_BASE + "/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token,
+        },
+        body: JSON.stringify({ message: text, session_id: sessionId }),
+      });
+      const data = await res.json();
+      typingEl.style.display = "none";
+      if (!res.ok) throw new Error(data.detail || "Something went wrong");
+
+      sessionId = data.session_id;
+      let meta = `Agent(s): ${data.agents_invoked.join(", ")}`;
+      if (data.sources && data.sources.length) meta += ` · Sources: ${data.sources.join(", ")}`;
+      if (data.ticket_id) meta += ` · Ticket #${data.ticket_id} created`;
+
+      addMessage("bot", data.final_response, meta);
+    } catch (err) {
+      typingEl.style.display = "none";
+      addMessage("bot", "Error: " + err.message);
+    }
+  }
+
+  document.getElementById("send-btn").addEventListener("click", sendMessage);
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+</script>
+</body>
+</html>

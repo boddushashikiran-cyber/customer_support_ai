@@ -1,0 +1,18 @@
+TechMart Electronics — Refund & Cancellation Policy
+
+1. Physical Products
+Refunds for physical products can be requested within 15 days of delivery, provided the item is unused, in its original packaging, and accompanied by the invoice. Refunds are processed within 5-7 business days after we receive and inspect the returned item.
+
+2. Subscription Plans (Premium / Pro)
+- Monthly subscriptions can be cancelled anytime; you retain access until the end of the current billing cycle. No partial refunds are issued for unused days within a cycle.
+- Annual subscriptions are eligible for a pro-rated refund if cancelled within the first 30 days.
+- If a payment was successful but the paid feature (e.g. Premium) has not unlocked within 30 minutes, this is treated as a sync error, not a refund case — contact Technical Support first; Billing will investigate in parallel if the issue persists.
+
+3. Digital Products & Licenses
+Digital licenses and downloadable software are non-refundable once the license key has been activated, except in cases of a verified defect.
+
+4. How to Request a Refund
+Submit a refund request through Account > Orders > Request Refund, or contact support@techmart-electronics.example with your order ID. Refunds are credited to the original payment method within 5-10 business days depending on your bank.
+
+5. Refund Rejections
+Refund requests may be rejected if: the return window has passed, the product shows signs of misuse or damage not covered under warranty, or the item is on our non-returnable list (e.g. opened earphones/earbuds for hygiene reasons).

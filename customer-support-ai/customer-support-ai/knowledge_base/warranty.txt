@@ -1,0 +1,26 @@
+TechMart Electronics — Warranty Policy
+
+Standard Warranty
+All TechMart-branded hardware products come with a 1-year manufacturer warranty covering manufacturing defects and hardware malfunctions under normal use.
+
+What's Covered
+- Manufacturing defects
+- Component failure not caused by external damage
+- Battery capacity dropping below 70% within the warranty period (for battery-powered devices)
+
+What's Not Covered
+- Physical damage (drops, cracks, liquid damage)
+- Damage from unauthorized repairs or modifications
+- Normal wear and tear (e.g. cosmetic scratches)
+- Software issues unrelated to hardware failure (see Technical Support instead)
+
+Extended Warranty
+An optional Extended Warranty Plan (+1 or +2 years) can be purchased within 30 days of the original purchase, extending the same coverage terms.
+
+How to Claim Warranty
+1. Contact support with your order ID and a description of the issue.
+2. Our team may ask for photos/videos or request the device be shipped to our service center.
+3. Approved claims result in a free repair, replacement part, or unit replacement, at TechMart's discretion, within 10-15 business days.
+
+Installation & Setup Issues
+Installation problems (e.g. app won't install, setup wizard errors) are handled by Technical Support and are not warranty claims.
